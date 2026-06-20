@@ -10,3 +10,11 @@ Planning docs live in [docs/](docs/):
 - `docs/learning.md` — Phase 5: running log of concepts learned (not yet written)
 
 Keep this file's doc list in sync as new docs (`setup.md`, `CHANGELOG.md`) are added once building starts.
+
+## Git workflow
+
+Trunk-based development, solo dev:
+- `main` is protected on GitHub — no direct pushes, no force pushes, no deletions. All changes go through a PR.
+- Branch naming: `phase-N-<name>` for planning docs, `feat/<name>` / `fix/<name>` / `chore/<name>` for code.
+- Commits follow Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`).
+- No required PR approvals yet (solo dev can't self-approve) — revisit once collaborators or CI exist.
