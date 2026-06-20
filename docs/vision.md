@@ -24,6 +24,7 @@ Savora is a web platform (mobile to follow later) where customers can browse a u
 - A small number of restaurants onboarded manually by hand (not self-serve)
 
 **Explicitly excluded from MVP (for now):**
+- Password reset / "forgot password" (needs an email provider) — a known, accepted limitation at MVP given the tiny manually-seeded user base; a locked-out user is handled manually until this is built
 - Self-serve restaurant signup / page builder
 - AI-assisted page theming/generation
 - Real-time booking availability and confirmed reservations
@@ -49,5 +50,6 @@ Savora is a web platform (mobile to follow later) where customers can browse a u
 - Social/discovery layer: trending restaurants, seeing where friends have been, public profiles (restaurants visited, favorites) — growing into a fuller social media layer over time
 - Influencer-restaurant marketplace for promotional deals
 - Food/restaurant photography as a paid add-on service
-- Mobile app (after the web version is built)
+- Password reset via email (add an email provider like Resend; reset-token flow)
+- Mobile app (after the web version is built) — reuses the existing REST API; will add a header-token auth path alongside the web cookie flow
 - Monetization: cut from bookings, paid influencer access, paid photoshoots, subscriptions, paid search placement
