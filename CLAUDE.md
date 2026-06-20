@@ -11,6 +11,14 @@ Planning docs live in [docs/](docs/):
 
 `setup.md` and `CHANGELOG.md` get added once real building starts (execution.md Milestone 1) — keep this list in sync when they're created.
 
+## Status — where we left off
+
+All five planning phases are complete and merged: brainstorm, vision, technical, execution, learning log.
+
+**Next step:** start `execution.md` Milestone 1 (Project & tooling setup) — scaffold `frontend/` and `backend/`, install CodeRabbit, create the Supabase project, add CI. Nothing has been built yet.
+
+Update this section as milestones complete so a new session knows exactly where to resume.
+
 ## Git workflow
 
 Trunk-based development, solo dev:
