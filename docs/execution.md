@@ -18,24 +18,29 @@
 - [ ] Create `frontend/` (Vite + React + TypeScript + Tailwind) and `backend/` (Express + TypeScript) folders per the Phase 3 project structure
 - [ ] Install CodeRabbit's GitHub app on the `savora` repo so it reviews future PRs automatically
 - [ ] Create a Supabase project for Savora; note the Postgres connection string and storage bucket
-- [ ] Add `backend/prisma/` with Prisma initialized against the Supabase Postgres connection string
-- [ ] Add a GitHub Actions workflow that runs lint + typecheck (+ tests once they exist) on every PR
-- [ ] Add `.env.example` files for both `frontend/` and `backend/` documenting required environment variables
+- [ ] Add `backend/prisma/` with Prisma initialized against the Supabase Postgres connection string — set both `DATABASE_URL` (pooled, 6543) and `DIRECT_URL` (direct, 5432) so migrations work
+- [ ] Set up Vitest in both `frontend/` and `backend/` with one trivial passing test each, so the test runner exists from day one
+- [ ] Add Zod to `backend/` for request validation (no schemas yet — just installed and ready for Milestone 2/3)
+- [ ] Add a GitHub Actions workflow that runs lint + typecheck + tests on every PR
+- [ ] Add `.env.example` files for both `frontend/` and `backend/` documenting required environment variables (incl. both Supabase connection strings and the session secret)
 - [ ] Start `docs/setup.md` — capture how the repo/env/Supabase project is wired as each piece above is set up
 
 ### Milestone 2: Backend foundation
 
-- [ ] Write the Prisma schema for `Restaurant`, `Dish`, `Photo`, `Customer`, `Favorite`, `BookingRequest`, `AdminUser` (see `technical.md`)
-- [ ] Run the first Prisma migration against Supabase
+- [ ] Write the Prisma schema for `Restaurant`, `Dish`, `Photo`, `Customer`, `Favorite`, `BookingRequest`, `AdminUser`, `Session` (see `technical.md`) — decide the `hours` JSON shape here
+- [ ] Run the first Prisma migration against Supabase (uses `DIRECT_URL`)
 - [ ] Set up the Express app skeleton (entry point, router structure, error-handling middleware)
 - [ ] Add `GET /restaurants` and `GET /restaurants/:id` returning seeded test data, to prove the DB → API → response path end to end
+- [ ] Set up a Bruno collection in the repo (e.g. `backend/bruno/`) with saved requests for these endpoints, so every new endpoint can be poked manually as it's built
 
 ### Milestone 3: Authentication
 
 - [ ] Implement `POST /auth/signup` (hash password with bcrypt, create `Customer` row)
-- [ ] Implement `POST /auth/login` (verify password, issue a session cookie)
-- [ ] Implement `POST /auth/logout` (clear session)
-- [ ] Implement session-checking middleware to protect authenticated routes
+- [ ] Implement `POST /auth/login` (verify password, create a `Session` row, set the cookie with `httpOnly` + `Secure` + `SameSite`)
+- [ ] Implement `POST /auth/logout` (delete the `Session` row, clear the cookie)
+- [ ] Implement session-checking middleware (read cookie → look up `Session` → reject if missing/expired) to protect authenticated routes
+- [ ] Configure CORS to allow only the frontend origin (with credentials) so the browser permits cookie'd API requests
+- [ ] Add basic rate limiting to `/auth/login` and `/auth/signup` to blunt brute-force attempts
 - [ ] Build the frontend signup and login pages, wired to the above endpoints
 - [ ] Build a basic "logged in as ___" header state on the frontend
 
