@@ -6,10 +6,10 @@ Planning docs live in [docs/](docs/):
 - [docs/brainstorm.md](docs/brainstorm.md) — Phase 1: idea, problem, target users, goals
 - `docs/vision.md` — Phase 2: MVP scope, features, user flow (not yet written)
 - `docs/technical.md` — Phase 3: stack, architecture, data model (not yet written)
-- `docs/execution.md` — Phase 4: task breakdown (not yet written)
-- `docs/learning.md` — Phase 5: running log of concepts learned (not yet written)
+- [docs/execution.md](docs/execution.md) — Phase 4: 8-milestone task breakdown to MVP
+- [docs/learning.md](docs/learning.md) — Phase 5: running log of concepts learned, added to continuously (not just during planning)
 
-Keep this file's doc list in sync as new docs (`setup.md`, `CHANGELOG.md`) are added once building starts.
+`setup.md` and `CHANGELOG.md` get added once real building starts (execution.md Milestone 1) — keep this list in sync when they're created.
 
 ## Git workflow
 
