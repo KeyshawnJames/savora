@@ -26,15 +26,17 @@ Done so far:
 - Root `README.md` created with the CodeRabbit reviews badge. Committed and pushed.
 - CodeRabbit GitHub app installed on the repo (user action, done).
 - Stale merged branch `docs/planning-refinements` cleaned up (was already squash-merged into `main`; removed leftover `Co-Authored-By: Claude` trailer from being reachable).
-- Still owe a `docs/reference/4-express.md` write-up (Express setup + handler syntax + FastAPI comparisons) — partial content already logged in `docs/learning.md` in the meantime.
-
+- `docs/reference/4-express.md` written (Express setup + handler syntax + FastAPI comparisons + the esModuleInterop gotcha) — doc backlog caught up at the time.
 - Supabase project created (`savora`), DB password saved in password manager, `photos` storage bucket created. Connection strings (`DATABASE_URL` pooled port 6543, `DIRECT_URL` direct port 5432) are in `backend/.env` (gitignored). Documented in `docs/reference/5-supabase.md`.
 - Prisma initialized in `backend/` (`prisma`, `dotenv` as dev deps), `backend/prisma/schema.prisma` and `backend/prisma.config.ts` created and wired to Supabase. Hit and fixed Prisma 7's config split (`url`/`directUrl` moved out of `schema.prisma` into `prisma.config.ts`, pointed at `DIRECT_URL` since migrations need the unpooled connection) and a `tsconfig.json`/`prisma.config.ts` rootDir conflict (scoped `tsconfig.json`'s `include` to `src/**/*`, added `/// <reference types="node" />` to `prisma.config.ts`). Connection verified via `npx prisma db pull` (correctly reports the DB as empty, no tables yet). Documented in `docs/reference/6-prisma.md`.
-- `docs/reference/4-express.md` was written this session (Express setup + handler syntax + FastAPI comparisons + the esModuleInterop gotcha) — doc backlog is now caught up.
+- `backend/.env.example` added (placeholder connection strings, safe to commit) and `.env`/`.claude/settings.local.json` gitignore gaps closed.
+- Committed (`chore: wire up Supabase connection and initialize Prisma`) and pushed to `chore/milestone-1-setup`.
+- Full data model defined in `backend/prisma/schema.prisma` (Restaurant, Dish, Photo, Customer, Favourite, BookingRequest, AdminUser, Session) based on `docs/technical.md`, with two-way relations wired on both sides. Intentional deviations from the doc: `Restaurant.hours` optional, `Dish.price` optional (some menus omit prices), `@@unique([customerId, restaurantId])` on Favourite (no dupes), `BookingRequest.status` defaults to `"pending"`, `Session` foreign keys both optional (a session is customer-OR-admin). Schema formatted with `npx prisma format`.
+- First migration run (`npx prisma migrate dev --name init`) — created all tables in Supabase for real. Verified via `npx prisma db pull --print` (matched schema) and Supabase Table Editor. Migrations folder (`backend/prisma/migrations/`) committed (no secrets, just SQL). Documented the migrations concept in `docs/reference/6-prisma.md` and `docs/learning.md`.
 
-**Next step:** define the actual data model in `backend/prisma/schema.prisma` (models for restaurants, menus, users, etc., based on `docs/technical.md`), then run `npx prisma migrate dev` to create the tables in Supabase for real, then `npx prisma generate` for the typed client.
+**Next step:** run `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored), then wire a `PrismaClient` instance into the backend app code (pointed at the pooled `DATABASE_URL`).
 
-Still to do after that: Vitest in both frontend/backend, Zod in backend, `.env.example` for both, GitHub Actions workflow, `docs/setup.md`.
+Still to do after that: Vitest in both frontend/backend, Zod in backend, `.env.example` for frontend, GitHub Actions workflow, `docs/setup.md`.
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
