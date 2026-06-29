@@ -35,9 +35,11 @@ Done so far:
 - First migration run (`npx prisma migrate dev --name init`) — created all tables in Supabase for real. Verified via `npx prisma db pull --print` (matched schema) and Supabase Table Editor. Migrations folder (`backend/prisma/migrations/`) committed (no secrets, just SQL). Documented the migrations concept in `docs/reference/6-prisma.md` and `docs/learning.md`.
 - Vitest set up in **both** `backend/` and `frontend/` (Milestone 1 task complete). Backend: `vitest` dev dep, `test`/`test:watch` scripts, trivial passing test at `backend/src/sanity.test.ts`. Frontend: `vitest` + `jsdom` + `@testing-library/react` + `@testing-library/jest-dom` dev deps, `test` block added to `vite.config.ts` (`environment: 'jsdom'`, `globals: true`, `setupFiles: './src/test/setup.ts'`), import switched to `vitest/config`, `"vitest/globals"` added to `tsconfig.app.json` types, setup file at `frontend/src/test/setup.ts`, trivial DOM-rendering test at `frontend/src/sanity.test.tsx`. Both green (backend 1 test, frontend 2 tests). Documented in `docs/reference/7-vitest.md`.
 
-**Milestone 1 status:** 5 of 9 tasks done — folders ✅, CodeRabbit ✅, Supabase ✅, Prisma init ✅, Vitest ✅. Plus two Milestone 2 tasks pulled forward early (schema + first migration). Remaining: Zod (backend), GitHub Actions CI, `.env.example` for frontend, `docs/setup.md`.
+- Zod installed in `backend/` as a runtime dependency (`zod` in `dependencies`, v4 `^4.4.3`) — install only, no schemas yet (those land in Milestone 2/3 with the first API routes). Documented in `docs/reference/8-zod.md` and `docs/learning.md`.
 
-**Next step:** add Zod to `backend/` (install only, no schemas yet — ready for Milestone 2/3). After that: GitHub Actions workflow, frontend `.env.example`, `docs/setup.md`. Also still pending and treated as the bridge into Milestone 2: `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`).
+**Milestone 1 status:** 6 of 9 tasks done — folders ✅, CodeRabbit ✅, Supabase ✅, Prisma init ✅, Vitest ✅, Zod ✅. Plus two Milestone 2 tasks pulled forward early (schema + first migration). Remaining: GitHub Actions CI, `.env.example` for frontend, `docs/setup.md`.
+
+**Next step:** GitHub Actions CI workflow. After that: frontend `.env.example`, `docs/setup.md`. Also still pending and treated as the bridge into Milestone 2: `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`).
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
