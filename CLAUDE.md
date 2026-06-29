@@ -38,9 +38,11 @@ Done so far:
 - Zod installed in `backend/` as a runtime dependency (`zod` in `dependencies`, v4 `^4.4.3`) — install only, no schemas yet (those land in Milestone 2/3 with the first API routes). Documented in `docs/reference/8-zod.md` and `docs/learning.md`.
 - GitHub Actions CI added at `.github/workflows/ci.yml` — runs on PRs to `main` and pushes to `main`; two parallel jobs (`backend`, `frontend`) that set up Node 24, install deps, and run `npm test` (Vitest). Green on the Milestone 1 PR. Two gotchas: pushing workflow files needed the `workflow` token scope (`gh auth refresh -s workflow`), and `npm ci` failed on Linux CI with "Missing @emnapi/* from lock file" (macOS-generated lockfile omits Linux-only optional deps — known npm bug); worked around by using `npm install` instead of `npm ci` in CI. Tradeoff + "real" fix noted in `docs/learning.md`. The frontend `package-lock.json` resync from debugging this is also committed.
 
-**Milestone 1 status:** 7 of 9 tasks done — folders ✅, CodeRabbit ✅, Supabase ✅, Prisma init ✅, Vitest ✅, Zod ✅, GitHub Actions CI ✅. Plus two Milestone 2 tasks pulled forward early (schema + first migration). Remaining: `.env.example` for frontend, `docs/setup.md`. PR for `chore/milestone-1-setup` → `main` is open (don't merge until the last two tasks land).
+- Frontend `.env.example` added (`VITE_API_URL=http://localhost:3000`, matching the backend port; Vite only exposes `VITE_`-prefixed vars to browser code). Also patched `frontend/.gitignore` (Vite's default only ignored `*.local`, not plain `.env`) to ignore `.env`/`.env.*` while keeping `!.env.example` tracked.
 
-**Next step:** frontend `.env.example`. After that: `docs/setup.md`, then merge the PR. Also still pending and treated as the bridge into Milestone 2: `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`).
+**Milestone 1 status:** 8 of 9 tasks done — folders ✅, CodeRabbit ✅, Supabase ✅, Prisma init ✅, Vitest ✅, Zod ✅, GitHub Actions CI ✅, frontend `.env.example` ✅. Plus two Milestone 2 tasks pulled forward early (schema + first migration). Remaining: `docs/setup.md`. PR for `chore/milestone-1-setup` → `main` is open (don't merge until `docs/setup.md` lands).
+
+**Next step:** `docs/setup.md` (the last Milestone 1 task), then merge the PR. Also still pending and treated as the bridge into Milestone 2: `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`).
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
