@@ -1,0 +1,95 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Restaurant {
+  id              String           @id @default(uuid())
+  name            String
+  description     String?
+  dishes          Dish[]
+  photos          Photo[]
+  favourites      Favourite[]
+  bookingRequests BookingRequest[]
+  address         String
+  hours           Json?
+  createdAt       DateTime         @default(now())
+}
+
+model Dish {
+  id           String     @id @default(uuid())
+  name         String
+  description  String?
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  price        Int?
+  category     String?
+}
+
+model Photo {
+  id           String     @id @default(uuid())
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  url          String
+  caption      String?
+}
+
+model Customer {
+  id              String           @id @default(uuid())
+  email           String           @unique
+  passwordHash    String
+  favourites      Favourite[]
+  bookingRequests BookingRequest[]
+  sessions        Session[]
+  createdAt       DateTime         @default(now())
+}
+
+model Favourite {
+  id           String     @id @default(uuid())
+  customerId   String
+  customer     Customer   @relation(fields: [customerId], references: [id])
+  restaurantId String
+  restaurant   Restaurant @relation(fields: [restaurantId], references: [id])
+  createdAt    DateTime   @default(now())
+
+  @@unique([customerId, restaurantId])
+}
+
+model BookingRequest {
+  id            String     @id @default(uuid())
+  customerId    String
+  customer      Customer   @relation(fields: [customerId], references: [id])
+  restaurantId  String
+  restaurant    Restaurant @relation(fields: [restaurantId], references: [id])
+  requestedDate DateTime
+  partySize     Int
+  status        String     @default("pending")
+  createdAt     DateTime   @default(now())
+}
+
+model AdminUser {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+}
+
+model Session {
+  id          String     @id @default(uuid())
+  customerId  String?
+  customer    Customer?  @relation(fields: [customerId], references: [id])
+  adminUserId String?
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
+  expiresAt   DateTime
+  createdAt   DateTime   @default(now())
+}
