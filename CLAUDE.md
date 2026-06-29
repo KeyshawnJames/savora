@@ -40,9 +40,9 @@ Done so far:
 
 - Frontend `.env.example` added (`VITE_API_URL=http://localhost:3000`, matching the backend port; Vite only exposes `VITE_`-prefixed vars to browser code). Also patched `frontend/.gitignore` (Vite's default only ignored `*.local`, not plain `.env`) to ignore `.env`/`.env.*` while keeping `!.env.example` tracked.
 
-**Milestone 1 status:** 8 of 9 tasks done — folders ✅, CodeRabbit ✅, Supabase ✅, Prisma init ✅, Vitest ✅, Zod ✅, GitHub Actions CI ✅, frontend `.env.example` ✅. Plus two Milestone 2 tasks pulled forward early (schema + first migration). Remaining: `docs/setup.md`. PR for `chore/milestone-1-setup` → `main` is open (don't merge until `docs/setup.md` lands).
+**Milestone 1 status:** effectively complete — folders ✅, CodeRabbit ✅, Supabase ✅, Prisma init ✅, Vitest ✅, Zod ✅, GitHub Actions CI ✅, frontend `.env.example` ✅. Plus two Milestone 2 tasks pulled forward early (schema + first migration). The 9th task, `setup.md`, was **deferred into Milestone 2** on purpose — it documents how to run the project, which is still in flux (no backend dev script yet, no Prisma client wired in), so it's better written once those stabilize. PR for `chore/milestone-1-setup` → `main` is open and green, ready to merge.
 
-**Next step:** `docs/setup.md` (the last Milestone 1 task), then merge the PR. Also still pending and treated as the bridge into Milestone 2: `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`).
+**Next step:** merge the open PR. Then Milestone 2, where the natural cluster is: add a backend dev script (install `tsx`, `"dev": "tsx watch src/index.ts"`), `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`), and **then** write `setup.md` documenting the now-stable run commands.
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
