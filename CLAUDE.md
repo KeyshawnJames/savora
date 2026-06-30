@@ -17,9 +17,9 @@ Planning docs live in [docs/](docs/) (not tracked in git — backed up via iClou
 
 All five planning phases are complete and merged: brainstorm, vision, technical, execution, learning log.
 
-**Next step:** mid Milestone 1 (Project & tooling setup), in teaching mode (see `docs/teaching-style.md`) — on branch `chore/milestone-1-setup`.
+**Next step:** start Milestone 2 (Backend foundation), in teaching mode (see `docs/teaching-style.md`) — Milestone 1 is merged to `main`; create a new branch for Milestone 2 work.
 
-Done so far:
+Done so far (all merged to `main`):
 - `frontend/` scaffolded (Vite + react-ts), Tailwind v4 wired in via `@tailwindcss/vite`. Documented in `docs/reference/1-vite.md`, `docs/reference/2-tailwind.md`, and `docs/learning.md`.
 - `docs/` untracked from git (now `.gitignore`d — backed up via iCloud instead).
 - `backend/` set up: `express` (runtime dep), `typescript`/`@types/express`/`@types/node` (dev deps), `tsconfig.json` configured for Node/Express (rootDir/outDir, types: node, esModuleInterop, strict, etc.), `src/index.ts` entry point wired up with a working GET `/` route, `backend/.gitignore` (node_modules/, dist/). Documented in `docs/reference/3-typescript.md` and `docs/learning.md`. Committed (`chore: set up TypeScript and Express entry point for backend`) and pushed.
@@ -40,9 +40,14 @@ Done so far:
 
 - Frontend `.env.example` added (`VITE_API_URL=http://localhost:3000`, matching the backend port; Vite only exposes `VITE_`-prefixed vars to browser code). Also patched `frontend/.gitignore` (Vite's default only ignored `*.local`, not plain `.env`) to ignore `.env`/`.env.*` while keeping `!.env.example` tracked.
 
-**Milestone 1 status:** effectively complete — folders ✅, CodeRabbit ✅, Supabase ✅, Prisma init ✅, Vitest ✅, Zod ✅, GitHub Actions CI ✅, frontend `.env.example` ✅. Plus two Milestone 2 tasks pulled forward early (schema + first migration). The 9th task, `setup.md`, was **deferred into Milestone 2** on purpose — it documents how to run the project, which is still in flux (no backend dev script yet, no Prisma client wired in), so it's better written once those stabilize. PR for `chore/milestone-1-setup` → `main` is open and green, ready to merge.
+**Milestone 1 status:** ✅ COMPLETE and merged to `main` (squash-merged from `chore/milestone-1-setup`, branch deleted). All 8 meaningful tasks done — folders, CodeRabbit, Supabase, Prisma init, Vitest, Zod, GitHub Actions CI, `.env.example` (both). Plus two Milestone 2 tasks pulled forward early (schema + first migration). The 9th task, `setup.md`, was **deferred into Milestone 2** on purpose (documents how to run the project, which isn't stable yet). CodeRabbit's free trial has since run out — CI is the real merge gate; CodeRabbit was advisory only.
 
-**Next step:** merge the open PR. Then Milestone 2, where the natural cluster is: add a backend dev script (install `tsx`, `"dev": "tsx watch src/index.ts"`), `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`), and **then** write `setup.md` documenting the now-stable run commands.
+Gotcha logged from the merge: the squash-merge **deleted the tracked planning docs** (`brainstorm/vision/technical/execution/learning.md`) from the working folder, because they were still tracked on old `main` while `docs/` had been untracked on the branch. Recovered from git history (`git show <commit-before-untrack>^:docs/<file>`). See `docs/learning.md` Mistakes section.
+
+**Milestone 2 — Backend foundation (in progress, branch `feat/milestone-2-backend`):**
+- ✅ Backend dev script: installed `tsx` (dev dep), added `"dev": "tsx watch src/index.ts"` to `backend/package.json` — runs the TS server directly and auto-restarts on save. Documented in `docs/reference/10-tsx.md` and `docs/learning.md`.
+
+**Next step:** run `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`), **then** write `setup.md` documenting the now-stable run commands, then the Express app skeleton + `GET /restaurants` endpoints + a Bruno collection.
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
