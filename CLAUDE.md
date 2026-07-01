@@ -11,7 +11,7 @@ Planning docs live in [docs/](docs/) (not tracked in git — backed up via iClou
 - [docs/teaching-style.md](docs/teaching-style.md) — how Claude should teach during the build (user runs commands, explains-first, one step at a time)
 - [docs/reference/](docs/reference/) — long-form explainer docs per tool/concept (Vite, React, Prisma, etc.), for looking something up when confused
 
-`setup.md` and `CHANGELOG.md` get added once real building starts (execution.md Milestone 1) — keep this list in sync when they're created.
+`setup.md` (clone-to-running guide, tracked at repo root — **created** in Milestone 2) and `CHANGELOG.md` (not yet created) live at the repo root, not in `docs/`, since they document the committed code rather than private planning.
 
 ## Status — where we left off
 
@@ -50,7 +50,9 @@ Gotcha logged from the merge: the squash-merge **deleted the tracked planning do
 - ✅ Wired a single shared `PrismaClient` instance at `backend/src/lib/prisma.ts` (pooled `DATABASE_URL`). Hit the **Prisma 7 driver-adapter change**: the bundled query engine is gone, so `new PrismaClient()` needs an adapter — installed `@prisma/adapter-pg` (runtime dep) and instantiate with `new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) })`. Includes `import "dotenv/config"` (tsx doesn't auto-load `.env`) and a `globalThis` hot-reload guard. Also learned the `nodenext` `.js`-extension-on-`.ts`-imports rule. Typechecks clean. Documented in `docs/reference/6-prisma.md` and `docs/learning.md`.
 - ✅ Connection smoke test: added `smokeTest()` in `backend/src/index.ts` that runs `prisma.restaurant.count()` on startup — verified green (`✅ DB connected — 0 restaurants`), proving the Prisma 7 stack reaches Supabase end-to-end. This flushed out a **Prisma 7 three-package gotcha**: the generated client imports `@prisma/client` at runtime, which wasn't installed (only `@prisma/adapter-pg` was) — `generate`/typecheck passed but the server crashed with `ERR_MODULE_NOT_FOUND`. Fixed with `npm install @prisma/client` (runtime dep). Documented in `docs/reference/6-prisma.md` and `docs/learning.md`. Committed (`feat: add DB connection smoke test on startup`) and pushed to `feat/milestone-2-backend`.
 
-**Next step:** write `setup.md` documenting the now-stable run commands, then the Express app skeleton + `GET /restaurants` endpoints + a Bruno collection.
+- ✅ `setup.md` written (tracked at repo root, not `docs/`) — clone-to-running guide: prerequisites (Node 24), backend + frontend setup steps, env-var tables (`DATABASE_URL`/`DIRECT_URL`/`VITE_API_URL`), common tasks (tests, migrations), and ports (backend :3000, frontend :5173). Kept terse and command-first; the *why* stays in `docs/reference/`. Committed (`docs: add setup.md with local run instructions`) and pushed.
+
+**Next step:** Express app skeleton + `GET /restaurants` endpoints + a Bruno collection.
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
