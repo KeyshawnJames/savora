@@ -46,8 +46,10 @@ Gotcha logged from the merge: the squash-merge **deleted the tracked planning do
 
 **Milestone 2 — Backend foundation (in progress, branch `feat/milestone-2-backend`):**
 - ✅ Backend dev script: installed `tsx` (dev dep), added `"dev": "tsx watch src/index.ts"` to `backend/package.json` — runs the TS server directly and auto-restarts on save. Documented in `docs/reference/10-tsx.md` and `docs/learning.md`.
+- ✅ Ran `npx prisma generate` — emitted the typed Prisma Client to `backend/src/generated/prisma` (gitignored, confirmed via `git check-ignore`). Generator was already configured (`provider = "prisma-client"`, `output = "../src/generated/prisma"`). Documented in `docs/reference/6-prisma.md` and `docs/learning.md`.
+- ✅ Wired a single shared `PrismaClient` instance at `backend/src/lib/prisma.ts` (pooled `DATABASE_URL`). Hit the **Prisma 7 driver-adapter change**: the bundled query engine is gone, so `new PrismaClient()` needs an adapter — installed `@prisma/adapter-pg` (runtime dep) and instantiate with `new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) })`. Includes `import "dotenv/config"` (tsx doesn't auto-load `.env`) and a `globalThis` hot-reload guard. Also learned the `nodenext` `.js`-extension-on-`.ts`-imports rule. Typechecks clean. Documented in `docs/reference/6-prisma.md` and `docs/learning.md`. **Not yet runtime-tested against Supabase** (next: a quick connection smoke test).
 
-**Next step:** run `npx prisma generate` for the typed client (output to `src/generated/prisma`, gitignored) + wire a `PrismaClient` instance into the backend (pooled `DATABASE_URL`), **then** write `setup.md` documenting the now-stable run commands, then the Express app skeleton + `GET /restaurants` endpoints + a Bruno collection.
+**Next step:** quick connection smoke test (call the shared `prisma` from `index.ts` to prove it reaches Supabase), **then** write `setup.md` documenting the now-stable run commands, then the Express app skeleton + `GET /restaurants` endpoints + a Bruno collection.
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
