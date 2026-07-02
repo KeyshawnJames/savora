@@ -52,7 +52,14 @@ Gotcha logged from the merge: the squash-merge **deleted the tracked planning do
 
 - ✅ `setup.md` written (tracked at repo root, not `docs/`) — clone-to-running guide: prerequisites (Node 24), backend + frontend setup steps, env-var tables (`DATABASE_URL`/`DIRECT_URL`/`VITE_API_URL`), common tasks (tests, migrations), and ports (backend :3000, frontend :5173). Kept terse and command-first; the *why* stays in `docs/reference/`. Committed (`docs: add setup.md with local run instructions`) and pushed.
 
-**Next step:** Express app skeleton + `GET /restaurants` endpoints + a Bruno collection.
+- 🔧 In progress: Express app skeleton. Split routes out of `index.ts` into `backend/src/routes/restaurant.ts` (an `express.Router()` mounted at `/restaurants`, currently a placeholder route). Added Prettier via the **VS Code extension + format-on-save** (user-level settings — `editor.formatOnSave` + `[typescript]`/`[typescriptreact]` → `esbenp.prettier-vscode`), NOT a project npm dep (tried that, reverted — kept editor-only per preference). Added why-comments to `index.ts` and `restaurant.ts`.
+
+**Deferred Express hardening (intentionally NOT added yet — apply at the trigger, not before):**
+- `app.use(express.json())` — add **when the first POST/PUT route lands** (e.g. booking-request endpoint) that reads `req.body`. Until then there are no bodies to parse.
+- Error-handling middleware (`app.use((err, _req, res, _next) => ...)`, 4-arg arity is what makes Express treat it as one; Express 5 auto-forwards async errors to it) — add **once real routes with failure paths exist** and we want clean JSON errors instead of Express's default HTML page.
+- `const PORT = process.env.PORT || 3000` — switch from hardcoded `3000` **when deploying** (a host needs to override the port).
+
+**Next step:** swap the `/restaurants` placeholder for the real Prisma list query (`GET /restaurants` → `prisma.restaurant.findMany()`), then `GET /restaurants/:id` (with not-found handling), then a Bruno collection.
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
