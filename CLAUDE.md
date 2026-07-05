@@ -65,7 +65,11 @@ Gotcha logged from the merge: the squash-merge **deleted the tracked planning do
 
 - ✅ **Bruno collection** at `backend/bruno/` — Bruno is an API client (Postman-like) that stores each request as a plain file in the repo, so the collection is version-controlled. YAML format (`opencollection.yml` + `*.yml` per request), Bruno-generated `.gitignore` (ignores `.env*`, `node_modules`, OS junk — the `baseUrl` var lives in the collection settings and IS tracked). Set a `baseUrl` collection var (`http://localhost:3000`) so requests read `{{baseUrl}}/restaurants`. Two requests added and verified live against the `tsx watch` server: `List restaurants` (`GET {{baseUrl}}/restaurants` → 200 `[]`) and `Get missing restaurant` (`GET {{baseUrl}}/restaurants/nonexistent` → 404 JSON error). **Deferred:** a real-id 200 request — the table is empty, so there's no id to fetch; add it once a `POST /restaurants` / seed route creates data. Collection created at `backend/bruno/` directly (first attempt nested under `Savora API/` with a space; recreated flat).
 
-**Next step:** continue Milestone 2 routes. Likely `POST /restaurants` (first write route) — triggers the deferred `app.use(express.json())` (reading `req.body`) and the first **Zod schema** to validate the body at the edge, and gives a real id to complete the Bruno happy-path request. (Still teaching-mode — hints, not code.)
+**Next step:** finish Milestone 2, then start Milestone 3 — **stick to `docs/execution.md` task order; don't pull work forward from later milestones** (note: `POST /restaurants` is a Milestone 6 admin task, NOT M2 — an earlier suggestion to build it next was scope creep).
+1. **Close out M2:** seed a test restaurant (Prisma Studio manual insert *or* a `prisma/seed.ts` script — decide the tradeoff) so `GET /restaurants` / `GET /restaurants/:id` return real data instead of `[]`, verify the row flows through both routes, add the deferred **real-id 200 request** to the Bruno collection, then tick the M2 boxes in `docs/execution.md` (still unchecked though the work is done).
+2. **Milestone 3 (Authentication):** first task is `POST /auth/signup` — hash password with bcrypt, create a `Customer` row. This unlocks the deferred `app.use(express.json())` (reading `req.body`) and the first **Zod schema** (validate the body at the edge). Then login/logout/session middleware/CORS/rate-limiting per `execution.md`.
+
+(Still teaching-mode — hints, not code.)
 
 Update this section as milestones complete so a new session knows exactly where to resume.
 
