@@ -3,5 +3,40 @@
     "frontend-design@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "supabase@claude-plugins-official": true
+  },
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git add:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run test:*)",
+      "Bash(npm run dev:*)",
+      "Bash(npx prisma generate:*)",
+      "Bash(npx prisma db pull:*)",
+      "Bash(npx prisma format:*)",
+      "Bash(npx tsc --noEmit:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "if": "Bash(git commit:*)",
+            "command": "echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"A git commit just completed. Per docs/teaching-style.md rule 7: verify docs/reference/ has an up-to-date explainer for the tool/concept just committed. If a new tool was introduced, create the next-numbered docs/reference/<n>-<tool>.md and update docs/reference/README.md index; if it exists, extend it. Also add or update a terse docs/learning.md entry. docs/ is gitignored (iCloud-backed) — no commit needed. Skip only if the commit introduced no new tool/concept (pure docs/config/refactor).\"}}'"
+          }
+        ]
+      }
+    ]
   }
 }
