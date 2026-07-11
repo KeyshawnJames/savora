@@ -2,82 +2,42 @@
 
 A unified restaurant platform: customizable, AI-assisted restaurant page/menu builder + a social discovery layer for customers (Instagram/Beli-inspired) + an influencer-restaurant marketplace.
 
-Planning docs live in [docs/](docs/) (not tracked in git — backed up via iCloud instead, see Git workflow):
-- [docs/brainstorm.md](docs/brainstorm.md) — Phase 1: idea, problem, target users, goals
-- [docs/vision.md](docs/vision.md) — Phase 2: MVP scope, features, user flow
-- [docs/technical.md](docs/technical.md) — Phase 3: stack, architecture, data model
-- [docs/execution.md](docs/execution.md) — Phase 4: 8-milestone task breakdown to MVP
-- [docs/learning.md](docs/learning.md) — Phase 5: running log of concepts learned, added to continuously (not just during planning)
-- [docs/teaching-style.md](docs/teaching-style.md) — how Claude should teach during the build (user runs commands, explains-first, one step at a time)
-- [docs/reference/](docs/reference/) — long-form explainer docs per tool/concept (Vite, React, Prisma, etc.), for looking something up when confused
+## Docs
 
-`setup.md` (clone-to-running guide, tracked at repo root — **created** in Milestone 2) and `CHANGELOG.md` (not yet created) live at the repo root, not in `docs/`, since they document the committed code rather than private planning.
+Planning docs live in [docs/](docs/) — **not tracked in git**, backed up via iCloud (see Git workflow):
+- [docs/status.md](docs/status.md) — **living progress log; read this first to resume** (current milestone, next step, active deferrals)
+- [docs/brainstorm.md](docs/brainstorm.md) — idea, problem, target users, goals
+- [docs/vision.md](docs/vision.md) — MVP scope, features, user flow
+- [docs/technical.md](docs/technical.md) — stack, architecture, data model
+- [docs/execution.md](docs/execution.md) — 8-milestone task breakdown to MVP
+- [docs/learning.md](docs/learning.md) — running log of concepts learned
+- [docs/teaching-style.md](docs/teaching-style.md) — how Claude should teach during the build
+- [docs/reference/](docs/reference/) — long-form explainer per tool/concept, numbered in the order introduced
 
-## Status — where we left off
+`setup.md` (clone-to-running guide) and `CHANGELOG.md` (not yet created) live at the repo **root**, tracked — they document the committed code, not private planning.
 
-All five planning phases are complete and merged: brainstorm, vision, technical, execution, learning log.
+## How to work on this project
 
-**Next step:** start Milestone 2 (Backend foundation), in teaching mode (see `docs/teaching-style.md`) — Milestone 1 is merged to `main`; create a new branch for Milestone 2 work.
+- **Teaching mode.** I run the commands, not you — hand me the exact command, explain it first, then wait for me to report back. Explain new concepts plainly, one step at a time. Full rules: [docs/teaching-style.md](docs/teaching-style.md). Auth gets *extra* care (real security stakes).
+- **Follow the plan.** Stick to [docs/execution.md](docs/execution.md) task order. Don't pull work forward from later milestones. Ask before doing anything off-plan — don't assume.
+- **Commits.** Conventional Commits (`feat:` / `fix:` / `docs:` / `chore:` / `refactor:`). **Never** add a `Co-Authored-By` / AI-authorship trailer. Proactively flag good checkpoints and give the exact `git` command, then wait for my go-ahead (I run git).
+- **Use Context7 for library / how-to questions.** When I ask how to do something with a library, framework, or tool, or say "follow best practices" / "use context7", fetch current docs via the Context7 MCP (`resolve-library-id` → `query-docs`) **before** answering — don't answer library specifics from memory. The `context7` plugin is already enabled.
+- **Document as you go.** After each confirmed step, update [docs/learning.md](docs/learning.md) and the relevant [docs/reference/](docs/reference/) doc (a commit hook reminds me of this). See teaching-style rule 7.
 
-Done so far (all merged to `main`):
-- `frontend/` scaffolded (Vite + react-ts), Tailwind v4 wired in via `@tailwindcss/vite`. Documented in `docs/reference/1-vite.md`, `docs/reference/2-tailwind.md`, and `docs/learning.md`.
-- `docs/` untracked from git (now `.gitignore`d — backed up via iCloud instead).
-- `backend/` set up: `express` (runtime dep), `typescript`/`@types/express`/`@types/node` (dev deps), `tsconfig.json` configured for Node/Express (rootDir/outDir, types: node, esModuleInterop, strict, etc.), `src/index.ts` entry point wired up with a working GET `/` route, `backend/.gitignore` (node_modules/, dist/). Documented in `docs/reference/3-typescript.md` and `docs/learning.md`. Committed (`chore: set up TypeScript and Express entry point for backend`) and pushed.
-- Root `README.md` created with the CodeRabbit reviews badge. Committed and pushed.
-- CodeRabbit GitHub app installed on the repo (user action, done).
-- Stale merged branch `docs/planning-refinements` cleaned up (was already squash-merged into `main`; removed leftover `Co-Authored-By: Claude` trailer from being reachable).
-- `docs/reference/4-express.md` written (Express setup + handler syntax + FastAPI comparisons + the esModuleInterop gotcha) — doc backlog caught up at the time.
-- Supabase project created (`savora`), DB password saved in password manager, `photos` storage bucket created. Connection strings (`DATABASE_URL` pooled port 6543, `DIRECT_URL` direct port 5432) are in `backend/.env` (gitignored). Documented in `docs/reference/5-supabase.md`.
-- Prisma initialized in `backend/` (`prisma`, `dotenv` as dev deps), `backend/prisma/schema.prisma` and `backend/prisma.config.ts` created and wired to Supabase. Hit and fixed Prisma 7's config split (`url`/`directUrl` moved out of `schema.prisma` into `prisma.config.ts`, pointed at `DIRECT_URL` since migrations need the unpooled connection) and a `tsconfig.json`/`prisma.config.ts` rootDir conflict (scoped `tsconfig.json`'s `include` to `src/**/*`, added `/// <reference types="node" />` to `prisma.config.ts`). Connection verified via `npx prisma db pull` (correctly reports the DB as empty, no tables yet). Documented in `docs/reference/6-prisma.md`.
-- `backend/.env.example` added (placeholder connection strings, safe to commit) and `.env`/`.claude/settings.local.json` gitignore gaps closed.
-- Committed (`chore: wire up Supabase connection and initialize Prisma`) and pushed to `chore/milestone-1-setup`.
-- Full data model defined in `backend/prisma/schema.prisma` (Restaurant, Dish, Photo, Customer, Favourite, BookingRequest, AdminUser, Session) based on `docs/technical.md`, with two-way relations wired on both sides. Intentional deviations from the doc: `Restaurant.hours` optional, `Dish.price` optional (some menus omit prices), `@@unique([customerId, restaurantId])` on Favourite (no dupes), `BookingRequest.status` defaults to `"pending"`, `Session` foreign keys both optional (a session is customer-OR-admin). Schema formatted with `npx prisma format`.
-- First migration run (`npx prisma migrate dev --name init`) — created all tables in Supabase for real. Verified via `npx prisma db pull --print` (matched schema) and Supabase Table Editor. Migrations folder (`backend/prisma/migrations/`) committed (no secrets, just SQL). Documented the migrations concept in `docs/reference/6-prisma.md` and `docs/learning.md`.
-- Vitest set up in **both** `backend/` and `frontend/` (Milestone 1 task complete). Backend: `vitest` dev dep, `test`/`test:watch` scripts, trivial passing test at `backend/src/sanity.test.ts`. Frontend: `vitest` + `jsdom` + `@testing-library/react` + `@testing-library/jest-dom` dev deps, `test` block added to `vite.config.ts` (`environment: 'jsdom'`, `globals: true`, `setupFiles: './src/test/setup.ts'`), import switched to `vitest/config`, `"vitest/globals"` added to `tsconfig.app.json` types, setup file at `frontend/src/test/setup.ts`, trivial DOM-rendering test at `frontend/src/sanity.test.tsx`. Both green (backend 1 test, frontend 2 tests). Documented in `docs/reference/7-vitest.md`.
+## Tech stack
 
-- Zod installed in `backend/` as a runtime dependency (`zod` in `dependencies`, v4 `^4.4.3`) — install only, no schemas yet (those land in Milestone 2/3 with the first API routes). Documented in `docs/reference/8-zod.md` and `docs/learning.md`.
-- GitHub Actions CI added at `.github/workflows/ci.yml` — runs on PRs to `main` and pushes to `main`; two parallel jobs (`backend`, `frontend`) that set up Node 24, install deps, and run `npm test` (Vitest). Green on the Milestone 1 PR. Two gotchas: pushing workflow files needed the `workflow` token scope (`gh auth refresh -s workflow`), and `npm ci` failed on Linux CI with "Missing @emnapi/* from lock file" (macOS-generated lockfile omits Linux-only optional deps — known npm bug); worked around by using `npm install` instead of `npm ci` in CI. Tradeoff + "real" fix noted in `docs/learning.md`. The frontend `package-lock.json` resync from debugging this is also committed.
+- **Frontend:** React + TypeScript + Tailwind CSS, built with Vite.
+- **Backend:** Node.js + Express + TypeScript — REST API, separate codebase from the frontend.
+- **Database:** PostgreSQL on Supabase, via Prisma (type-safe queries + migrations). Supabase Storage for photos.
+- **Auth:** rolled by hand — bcrypt password hashing + server-side sessions (httpOnly cookies, `Session` table in Postgres). Supabase Auth deliberately *not* used (learning goal).
+- **Validation:** Zod at every route boundary. **Testing:** Vitest (both apps, wired into CI).
 
-- Frontend `.env.example` added (`VITE_API_URL=http://localhost:3000`, matching the backend port; Vite only exposes `VITE_`-prefixed vars to browser code). Also patched `frontend/.gitignore` (Vite's default only ignored `*.local`, not plain `.env`) to ignore `.env`/`.env.*` while keeping `!.env.example` tracked.
-
-**Milestone 1 status:** ✅ COMPLETE and merged to `main` (squash-merged from `chore/milestone-1-setup`, branch deleted). All 8 meaningful tasks done — folders, CodeRabbit, Supabase, Prisma init, Vitest, Zod, GitHub Actions CI, `.env.example` (both). Plus two Milestone 2 tasks pulled forward early (schema + first migration). The 9th task, `setup.md`, was **deferred into Milestone 2** on purpose (documents how to run the project, which isn't stable yet). CodeRabbit's free trial has since run out — CI is the real merge gate; CodeRabbit was advisory only.
-
-Gotcha logged from the merge: the squash-merge **deleted the tracked planning docs** (`brainstorm/vision/technical/execution/learning.md`) from the working folder, because they were still tracked on old `main` while `docs/` had been untracked on the branch. Recovered from git history (`git show <commit-before-untrack>^:docs/<file>`). See `docs/learning.md` Mistakes section.
-
-**Milestone 2 — Backend foundation (in progress, branch `feat/milestone-2-backend`):**
-- ✅ Backend dev script: installed `tsx` (dev dep), added `"dev": "tsx watch src/index.ts"` to `backend/package.json` — runs the TS server directly and auto-restarts on save. Documented in `docs/reference/10-tsx.md` and `docs/learning.md`.
-- ✅ Ran `npx prisma generate` — emitted the typed Prisma Client to `backend/src/generated/prisma` (gitignored, confirmed via `git check-ignore`). Generator was already configured (`provider = "prisma-client"`, `output = "../src/generated/prisma"`). Documented in `docs/reference/6-prisma.md` and `docs/learning.md`.
-- ✅ Wired a single shared `PrismaClient` instance at `backend/src/lib/prisma.ts` (pooled `DATABASE_URL`). Hit the **Prisma 7 driver-adapter change**: the bundled query engine is gone, so `new PrismaClient()` needs an adapter — installed `@prisma/adapter-pg` (runtime dep) and instantiate with `new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) })`. Includes `import "dotenv/config"` (tsx doesn't auto-load `.env`) and a `globalThis` hot-reload guard. Also learned the `nodenext` `.js`-extension-on-`.ts`-imports rule. Typechecks clean. Documented in `docs/reference/6-prisma.md` and `docs/learning.md`.
-- ✅ Connection smoke test: added `smokeTest()` in `backend/src/index.ts` that runs `prisma.restaurant.count()` on startup — verified green (`✅ DB connected — 0 restaurants`), proving the Prisma 7 stack reaches Supabase end-to-end. This flushed out a **Prisma 7 three-package gotcha**: the generated client imports `@prisma/client` at runtime, which wasn't installed (only `@prisma/adapter-pg` was) — `generate`/typecheck passed but the server crashed with `ERR_MODULE_NOT_FOUND`. Fixed with `npm install @prisma/client` (runtime dep). Documented in `docs/reference/6-prisma.md` and `docs/learning.md`. Committed (`feat: add DB connection smoke test on startup`) and pushed to `feat/milestone-2-backend`.
-
-- ✅ `setup.md` written (tracked at repo root, not `docs/`) — clone-to-running guide: prerequisites (Node 24), backend + frontend setup steps, env-var tables (`DATABASE_URL`/`DIRECT_URL`/`VITE_API_URL`), common tasks (tests, migrations), and ports (backend :3000, frontend :5173). Kept terse and command-first; the *why* stays in `docs/reference/`. Committed (`docs: add setup.md with local run instructions`) and pushed.
-
-- ✅ Express app skeleton. Split routes out of `index.ts` into `backend/src/routes/restaurant.ts` (an `express.Router()` mounted at `/restaurants`). Added Prettier via the **VS Code extension + format-on-save** (user-level settings — `editor.formatOnSave` + `[typescript]`/`[typescriptreact]` → `esbenp.prettier-vscode`), NOT a project npm dep (tried that, reverted — kept editor-only per preference). Added why-comments to `index.ts` and `restaurant.ts`.
-- ✅ First real endpoint: `GET /restaurants` → `prisma.restaurant.findMany()`, sent with `res.json()`. Handler is `async` (awaits the query); the fetch runs **per-request**, not as a boot-time snapshot. Verified live: `tsx watch` dev server up, `http://localhost:3000/restaurants` returns `[]` on the empty table — proving the full stack (browser → Express → router → Prisma → Supabase → JSON) works end to end. Logged three concepts in `docs/learning.md`: the data's journey Postgres→browser (JSON is *not* the storage format — DB speaks binary, Express creates the JSON), `findMany` returns a scalar-only array (relations omitted unless `include`d), and `res.json` vs `res.send`. **Teaching-mode session** — user wrote the handler themselves from hints.
-
-- ✅ `GET /restaurants/:id` → single restaurant by id. New concepts: Express route params (`:id` in path, read via `req.params`), `prisma.restaurant.findUnique({ where: { id } })`, and **not-found handling** — `findUnique` returns `null` for a missing id, so guard with `if (!restaurant) return res.status(404).json({ error: ... })`; the `return` avoids falling through to the 200 response (which would also throw "headers already sent"). Chose **JSON error bodies** (not plain text) for consistency with the success path. Intentionally skipped try/catch (Express 5 auto-forwards async rejections to error middleware, added later) and `:id` validation (lands with POST routes + Zod). Verified live (200 on a real id, 404 JSON on a miss). Committed (`feat: add GET /restaurants/:id with 404 handling`, `2a7df7a`). **Teaching-mode session** — user wrote the handler from hints.
-
-**Deferred Express hardening (intentionally NOT added yet — apply at the trigger, not before):**
-- `app.use(express.json())` — add **when the first POST/PUT route lands** (e.g. booking-request endpoint) that reads `req.body`. Until then there are no bodies to parse.
-- Error-handling middleware (`app.use((err, _req, res, _next) => ...)`, 4-arg arity is what makes Express treat it as one; Express 5 auto-forwards async errors to it) — add **once real routes with failure paths exist** and we want clean JSON errors instead of Express's default HTML page.
-- `const PORT = process.env.PORT || 3000` — switch from hardcoded `3000` **when deploying** (a host needs to override the port).
-- Bruno **environments** (`environments/local.bru` + `environments/prod.bru`, active via the top-right dropdown) — currently `baseUrl` is a single **collection variable** (only one target, `localhost`). Migrate it into a proper `local` environment **when deploying** and a real `prod` URL exists — that's when a second target makes the dropdown worth anything.
-
-- ✅ **Bruno collection** at `backend/bruno/` — Bruno is an API client (Postman-like) that stores each request as a plain file in the repo, so the collection is version-controlled. YAML format (`opencollection.yml` + `*.yml` per request), Bruno-generated `.gitignore` (ignores `.env*`, `node_modules`, OS junk — the `baseUrl` var lives in the collection settings and IS tracked). Set a `baseUrl` collection var (`http://localhost:3000`) so requests read `{{baseUrl}}/restaurants`. Two requests added and verified live against the `tsx watch` server: `List restaurants` (`GET {{baseUrl}}/restaurants` → 200 `[]`) and `Get missing restaurant` (`GET {{baseUrl}}/restaurants/nonexistent` → 404 JSON error). **Deferred:** a real-id 200 request — the table is empty, so there's no id to fetch; add it once a `POST /restaurants` / seed route creates data. Collection created at `backend/bruno/` directly (first attempt nested under `Savora API/` with a space; recreated flat).
-
-**Next step:** finish Milestone 2, then start Milestone 3 — **stick to `docs/execution.md` task order; don't pull work forward from later milestones** (note: `POST /restaurants` is a Milestone 6 admin task, NOT M2 — an earlier suggestion to build it next was scope creep).
-1. **Close out M2:** seed a test restaurant (Prisma Studio manual insert *or* a `prisma/seed.ts` script — decide the tradeoff) so `GET /restaurants` / `GET /restaurants/:id` return real data instead of `[]`, verify the row flows through both routes, add the deferred **real-id 200 request** to the Bruno collection, then tick the M2 boxes in `docs/execution.md` (still unchecked though the work is done).
-2. **Milestone 3 (Authentication):** first task is `POST /auth/signup` — hash password with bcrypt, create a `Customer` row. This unlocks the deferred `app.use(express.json())` (reading `req.body`) and the first **Zod schema** (validate the body at the edge). Then login/logout/session middleware/CORS/rate-limiting per `execution.md`.
-
-(Still teaching-mode — hints, not code.)
-
-Update this section as milestones complete so a new session knows exactly where to resume.
+Details and the *why* behind each choice: [docs/technical.md](docs/technical.md).
 
 ## Git workflow
 
 Trunk-based development, solo dev:
 - `main` is protected on GitHub — no direct pushes, no force pushes, no deletions. All changes go through a PR.
-- Branch naming: `phase-N-<name>` for planning docs, `feat/<name>` / `fix/<name>` / `chore/<name>` for code.
-- Commits follow Conventional Commits (`feat:`, `fix:`, `docs:`, `chore:`, `refactor:`).
-- No required PR approvals yet (solo dev can't self-approve) — revisit once collaborators or CI exist.
-- `docs/` is gitignored, not committed — the planning docs live locally and are backed up via iCloud instead of git.
+- Branch naming: `feat/<name>` / `fix/<name>` / `chore/<name>` for code, `phase-N-<name>` for planning docs.
+- No required PR approvals yet (solo dev can't self-approve) — revisit once collaborators exist.
+- `docs/` is gitignored — planning docs live locally, backed up via iCloud instead of git.
