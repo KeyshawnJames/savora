@@ -1,5 +1,6 @@
 import express from "express";
 import { prisma } from "./lib/prisma.js";
+import { fileURLToPath } from "node:url";
 import restaurantRouter from "./routes/restaurant.js";
 
 const app = express();
@@ -19,9 +20,17 @@ async function smokeTest() {
   console.log(`✅ DB connected — ${count} restaurants`);
 }
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-  smokeTest().catch((err) => {
-    console.error("❌ DB connection failed:", err);
+// Only listen when this file is run directly (npm run dev), not when it's
+// imported — e.g. a test importing `app` to hit routes in memory shouldn't
+// boot a real server or fire the DB smoke test. argv[1] is the file Node was
+// told to run; import.meta.url is this file, converted to a path to compare.
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+    smokeTest().catch((err) => {
+      console.error("❌ DB connection failed:", err);
+    });
   });
-});
+}
+
+export default app;
